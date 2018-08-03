@@ -13,7 +13,7 @@ class ReviewController extends Controller
     public function index(Product $product)
     {
         return ReviewResource::collection($product->reviews);
-       //return Review::all();
+        //return Review::all();
     }
 
     /**
@@ -45,7 +45,7 @@ class ReviewController extends Controller
      */
     public function show(Review $review)
     {
-        return new ReviewResource($review);
+      //
     }
 
     /**
