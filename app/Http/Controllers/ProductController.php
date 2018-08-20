@@ -7,7 +7,9 @@ use App\Http\Resources\Product\ProductResource;
 use App\Model\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Mockery\CountValidator\Exception;
 use Symfony\Component\HttpFoundation\Response;
+
 class ProductController extends Controller
 {
     public function __construct()
@@ -83,6 +85,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $this->ProductUserCheck($product);
         $request['detail'] = $request->description;
         unset($request['description']);
 
@@ -95,13 +98,19 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Model\Product $product
+     * @param  \App\Model\Product  $product
      * @return \Illuminate\Http\Response
      */
     public function destroy(Product $product)
     {
-
+        $this->ProductUserCheck($product);
         $product->delete();
-        return response([null,Response::HTTP_NO_CONTENT]);
+        return response(null,Response::HTTP_NO_CONTENT);
+    }
+    public function ProductUserCheck($product)
+    {
+        if (Auth::id() !== $product->user_id) {
+            throw new ProductNotBelongsToUser;
+        }
     }
 }
